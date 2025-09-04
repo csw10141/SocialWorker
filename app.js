@@ -171,9 +171,23 @@
     return { ok: nameOk && phoneOk, phoneSan: p };
   }
 
-  function submitData(name, phone) {
-    // 실제 서버 연동이 없으므로 알림으로 대체합니다.
-    alert('상담 신청이 접수되었습니다.\n이름: ' + name + '\n전화: ' + phone);
+  async function submitData(name, phone) {
+    const device = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'mobile' : 'pc';
+    try {
+      const res = await fetch('/api/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, phone, device })
+      });
+      if (!res.ok) {
+        const msg = await res.text().catch(() => '');
+        throw new Error(msg || ('HTTP ' + res.status));
+      }
+      alert('상담 신청이 접수되었습니다.\n이름: ' + name + '\n전화: ' + phone);
+    } catch (err) {
+      console.error('Submit failed:', err);
+      alert('전송 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+    }
   }
 
   // Phone auto-formatting helpers
