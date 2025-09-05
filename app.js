@@ -171,7 +171,7 @@
     const p = sanitizePhone(phone);
     const nameOk = typeof name === 'string' && name.trim().length >= 1;
     const phoneOk = p.length >= 10 && p.length <= 11;
-    return { ok: nameOk && phoneOk, phoneSan: p };
+    return { ok: nameOk && phoneOk, phoneSan: p, nameOk, phoneOk };
   }
 
   // 제출 진행 상태 UI 관리
@@ -315,6 +315,68 @@
     });
   }
 
+  // ===== Error bubble helpers =====
+  const _errorBubbles = new WeakMap();
+
+  function clearErrorBubbles() {
+    document.querySelectorAll('.error-bubble').forEach(el => el.remove());
+    _errorBubbles && _errorBubbles.clear && _errorBubbles.clear();
+  }
+
+  function showFieldError(targetEl, message) {
+    if (!targetEl) return;
+
+    // 기존 말풍선 제거(필드 단위)
+    const prev = _errorBubbles.get(targetEl);
+    if (prev && prev.parentNode) prev.parentNode.removeChild(prev);
+
+    const bubble = document.createElement('div');
+    bubble.className = 'error-bubble';
+    bubble.textContent = message;
+    bubble.style.visibility = 'hidden';
+
+    document.body.appendChild(bubble);
+
+    const rect = targetEl.getBoundingClientRect();
+    const bubbleRect = bubble.getBoundingClientRect();
+
+    // position: fixed 기준 → viewport 좌표 사용
+    const gap = 8;
+    let top = rect.top - bubbleRect.height - gap;
+    let left = rect.left; // 기본은 왼쪽 정렬
+
+    // 화면 오른쪽 넘침 방지
+    const maxLeft = window.innerWidth - bubbleRect.width - 8;
+    if (left > maxLeft) left = Math.max(8, maxLeft);
+    if (left < 8) left = 8;
+
+    // 화면 위로 넘어가면 대상 위쪽에 배치가 어려우므로 위로 조금 더 여백만 두고 붙임
+    if (top < 8) top = Math.max(8, rect.top + rect.height + gap);
+
+    bubble.style.left = left + 'px';
+    bubble.style.top = top + 'px';
+    bubble.style.visibility = 'visible';
+
+    _errorBubbles.set(targetEl, bubble);
+
+    // 자동 제거 타이머
+    const timer = setTimeout(() => {
+      if (bubble && bubble.parentNode) bubble.parentNode.removeChild(bubble);
+      if (_errorBubbles.has(targetEl)) _errorBubbles.delete(targetEl);
+    }, 3000);
+
+    // 입력/변경 시 제거
+    const cleanup = () => {
+      clearTimeout(timer);
+      if (bubble && bubble.parentNode) bubble.parentNode.removeChild(bubble);
+      targetEl.removeEventListener('input', cleanup, { once: true });
+      targetEl.removeEventListener('change', cleanup, { once: true });
+      if (_errorBubbles.has(targetEl)) _errorBubbles.delete(targetEl);
+    };
+    targetEl.addEventListener('input', cleanup, { once: true });
+    targetEl.addEventListener('change', cleanup, { once: true });
+  }
+
   // 이벤트 바인딩 - 정책 모달
   if (openPolicyFromSticky) {
     openPolicyFromSticky.addEventListener('click', (e) => {
@@ -357,25 +419,34 @@
   });
 
   // Sticky form submit
-if (stickyForm) {
-    stickyForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const name = nameInput.value.trim();
-      const phone = phoneInput.value;
-      const { ok, phoneSan } = validateForm(name, phone);
-      if (!ok) {
-        alert('이름과 휴대폰 번호(숫자 10~11자리)를 정확히 입력해 주세요.');
-        return;
-      }
-      if (!agreeInput || !agreeInput.checked) {
-        alert('개인정보 처리방침에 동의해 주세요.');
-        return;
-      }
-      const education = eduSelect ? (eduSelect.value || '') : '';
-      const success = await submitData(name, phoneSan, 'sticky', education);
-      if (success) stickyForm.reset(); // 성공시에만 reset
-    });
-  }
+  if (stickyForm) {
+      stickyForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        clearErrorBubbles();
+        const name = nameInput.value.trim();
+        const phone = phoneInput.value;
+        const { ok, phoneSan, nameOk, phoneOk } = validateForm(name, phone);
+        if (!nameOk) {
+          showFieldError(nameInput, '이름을 입력해 주세요.');
+          nameInput.focus();
+          return;
+        }
+        if (!phoneOk) {
+          showFieldError(phoneInput, '휴대폰 번호(숫자 10~11자리)를 입력해 주세요.');
+          phoneInput.focus();
+          return;
+        }
+        if (!agreeInput || !agreeInput.checked) {
+          // 체크박스 바로 위에 표시
+          showFieldError(agreeInput, '개인정보 처리방침에 동의해 주세요.');
+          agreeInput.focus();
+          return;
+        }
+        const education = eduSelect ? (eduSelect.value || '') : '';
+        const success = await submitData(name, phoneSan, 'sticky', education);
+        if (success) stickyForm.reset(); // 성공시에만 reset
+      });
+    }
   
   // Modal form submit
   if (modalForm) {
