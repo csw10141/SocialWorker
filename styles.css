@@ -69,7 +69,7 @@ body {
   font-weight: 600;
   font-size:17px;
 }
-.bar-btn:hover { background: #252b39; }
+.bar-btn:hover { background: #edf3ff; }
 
 /* Sticky form inside bottom bar */
 .sticky-form {
@@ -214,7 +214,7 @@ body {
   font-size:17px;
   cursor: pointer;
 }
-.primary-btn:hover { background: #252b39; }
+.primary-btn:hover { background: #edf3ff; }
 
 .sr-only {
   position: absolute;
@@ -286,4 +286,5 @@ body {
   @keyframes blink { 50% { opacity: .3; } }
   
   /* 버튼 비활성 표시 */
+
   button[disabled], input[disabled] { opacity: .6; cursor: not-allowed; }
