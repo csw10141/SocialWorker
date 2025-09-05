@@ -15,7 +15,8 @@
   const modalForm = document.getElementById('modalForm');
   const modalName = document.getElementById('modalName');
   const modalPhone = document.getElementById('modalPhone');
-  const modalEdu = document.getElementById('modalEdu');
+  // 모달 내 체크박스(최종학력) - 다중 중 1개만 선택되도록 제어
+  const modalEduCheckboxes = modalForm ? Array.from(modalForm.querySelectorAll('input[name="education"].edu-checkbox')) : [];
   const modalAgree = document.getElementById('modalAgree');
   const openPolicyFromModal = document.getElementById('openPolicyFromModal');
 
@@ -198,7 +199,7 @@
 
     // 폼 컨트롤 비활성화
     const stickyControls = [nameInput, phoneInput, eduSelect, agreeInput, stickyForm && stickyForm.querySelector('[type="submit"]')].filter(Boolean);
-    const modalControls  = [modalName, modalPhone, modalEdu, modalAgree, modalForm && modalForm.querySelector('[type="submit"]')].filter(Boolean);
+    const modalControls  = [modalName, modalPhone, ...modalEduCheckboxes, modalAgree, modalForm && modalForm.querySelector('[type="submit"]')].filter(Boolean);
 
     const disable = (arr, disabled) => arr.forEach(el => { try{ el.disabled = disabled; }catch(_){} });
 
@@ -350,6 +351,17 @@ if (stickyForm) {
   
   // Modal form submit
   if (modalForm) {
+    // 체크박스 1개만 선택되도록 강제
+    if (modalEduCheckboxes.length) {
+      modalEduCheckboxes.forEach(cb => {
+        cb.addEventListener('change', () => {
+          if (cb.checked) {
+            modalEduCheckboxes.forEach(other => { if (other !== cb) other.checked = false; });
+          }
+        });
+      });
+    }
+
     modalForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const name = modalName.value.trim();
@@ -363,7 +375,8 @@ if (stickyForm) {
         alert('개인정보 처리방침에 동의해 주세요.');
         return;
       }
-      const education = modalEdu ? (modalEdu.value || '') : '';
+      const checked = modalEduCheckboxes.find(cb => cb.checked);
+      const education = checked ? checked.value : '';
       const success = await submitData(name, phoneSan, 'modal', education);
       if (success) {
         closeModal();

@@ -17,13 +17,14 @@
       <form id="stickyForm" class="sticky-form" autocomplete="on">
         <input type="text" id="nameInput" name="name" placeholder="이름" aria-label="이름" required />
         <input type="tel" id="phoneInput" name="phone" placeholder="휴대폰 번호" aria-label="휴대폰 번호" inputmode="tel" required />
-        <fieldset class="edu-group" aria-label="최종학력(선택)">
-          <legend class="sr-only">최종학력(선택)</legend>
-          <label><input type="checkbox" name="education" value="highschool" class="edu-checkbox"> 고졸</label>
-          <label><input type="checkbox" name="education" value="associate" class="edu-checkbox"> 초대졸</label>
-          <label><input type="checkbox" name="education" value="college" class="edu-checkbox"> 대졸</label>
-          <label><input type="checkbox" name="education" value="other" class="edu-checkbox"> 기타</label>
-        </fieldset>
+        <label class="sr-only" for="eduSelect">최종학력(선택)</label>
+        <select id="eduSelect" name="education" aria-label="최종학력(선택)">
+          <option value="">학력(선택)</option>
+          <option value="highschool">고졸</option>
+          <option value="associate">초대졸</option>
+          <option value="college">대졸</option>
+          <option value="other">기타</option>
+        </select>
         <label class="agree">
           <input type="checkbox" id="agreeInput" required />
           <span>

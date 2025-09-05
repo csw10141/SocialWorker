@@ -96,6 +96,26 @@ body {
   border: 1px solid rgba(255,255,255,0.12);
   border-radius: 10px;
 }
+.sticky-form select#eduSelect {
+  /* 작은 셀렉트 박스 */
+  height: 38px;
+  padding: 6px 28px 6px 10px; /* 오른쪽 여백은 화살표 영역 */
+  color: #fff;
+  background: #171a22;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  flex: 0 0 120px; /* 데스크탑에서는 작게 */
+  max-width: 150px;
+  appearance: none; /* 기본 UI 제거 */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: linear-gradient(45deg, #9aa4b2 50%, rgba(0,0,0,0) 50%),
+                    linear-gradient(135deg, #9aa4b2 50%, rgba(0,0,0,0) 50%);
+  background-position: right 10px center, right 4px center;
+  background-size: 8px 8px, 8px 8px;
+  background-repeat: no-repeat;
+}
+.sticky-form select#eduSelect:focus { outline: 2px solid rgba(59,130,246,0.5); outline-offset: 1px; }
 .sticky-form .submit-btn { white-space: nowrap; }
 
 /* 동의 체크박스 라벨 */
@@ -232,7 +252,7 @@ body {
     width: 100%;
     display: grid;
     grid-template-columns: 1fr 132px; /* right column fixed for CTA */
-    grid-template-rows: auto auto;
+    grid-template-rows: auto auto auto; /* 셀렉트가 한 줄 더 차지 */
     column-gap: 12px;
     row-gap: 10px;
     align-items: stretch;
@@ -241,6 +261,7 @@ body {
   .sticky-form #nameInput { flex: 1 1 auto; max-width: none; }
   #nameInput { grid-column: 1; grid-row: 1; }
   #phoneInput { grid-column: 1; grid-row: 2; }
+  #eduSelect { grid-column: 1; grid-row: 3; width: 100%; max-width: none; }
   .agree { grid-column: 2; grid-row: 1; justify-self: end; align-self: start; width: auto; }
   .sticky-form .submit-btn { grid-column: 2; grid-row: 2; align-self: end; }
   .gallery { padding: 12px 10px 96px; gap: 12px; }
