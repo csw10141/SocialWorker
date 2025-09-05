@@ -175,8 +175,8 @@
 
   async function submitData(name, phone) {
     // 본인 Apps Script 웹앱 /exec URL 넣으세요
-    const url = "https://script.google.com/macros/s/AKfycb.../exec";  
-  
+    const url = "https://script.google.com/macros/s/AKfycbzuBorWV63iF8rZAgO43bP3W3vklJovQMrD7EWSJOGuS9R87x-JN_s6NHrgwhvI9qBM/exec";
+
     const device = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'mobile' : 'pc';
     const payload = { name, phone, device };
   
