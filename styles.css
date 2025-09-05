@@ -1,6 +1,7 @@
 /* Reset & base */
 * { box-sizing: border-box; }
-html, body { height: 100%; }
+html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+body { height: 100%; }
 body {
   margin: 0;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Noto Sans KR, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
@@ -203,6 +204,7 @@ body {
   background: #151a22;
   border: 1px solid rgba(255,255,255,0.12);
   border-radius: 10px;
+  font-size: 16px;
 }
 .primary-btn {
   height: 46px;
@@ -305,11 +307,13 @@ body {
 .submitting-overlay{
     position: fixed; inset: 0; background: rgba(0,0,0,.45);
     display: flex; align-items: center; justify-content: center;
-    color: #fff; font-size: 18px; z-index: 9999; font-weight:600;
+    color: #fff; font-size: 18px; z-index: 9999;
   }
   .submitting-overlay .dot{ animation: blink 1s infinite steps(2,start); }
   @keyframes blink { 50% { opacity: .3; } }
   
   /* 버튼 비활성 표시 */
-
   button[disabled], input[disabled] { opacity: .6; cursor: not-allowed; }
+
+/* 전역 폼 컨트롤 폰트 크기 보정 (iOS 자동 확대 방지) */
+input, select, textarea, button { font-size: 16px; }
