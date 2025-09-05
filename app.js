@@ -174,28 +174,28 @@
   let _submitInFlight = false;
 
   async function submitData(name, phone) {
-    // 본인 Apps Script 웹앱 /exec URL 넣으세요
+    // ★ Apps Script 배포 화면에서 복사한 전체 /exec URL을 끝까지 넣으세요 (… 금지)
     const url = "https://script.google.com/macros/s/AKfycbzuBorWV63iF8rZAgO43bP3W3vklJovQMrD7EWSJOGuS9R87x-JN_s6NHrgwhvI9qBM/exec";
-
+  
     const device = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'mobile' : 'pc';
     const payload = { name, phone, device };
-
+  
     try {
-        await fetch(url, {
+      await fetch(url, {
         method: 'POST',
-        mode: 'no-cors',                 // 응답은 읽지 않지만, 요청은 전송됨
-        headers: { 'Content-Type': 'text/plain' }, // 프리플라이트 회피용
+        mode: 'no-cors',                    // 응답은 못 읽어도 요청은 전송됨
+        headers: { 'Content-Type': 'text/plain' }, // 프리플라이트 회피
         body: JSON.stringify(payload)
-        });
-
-        alert('상담 신청이 접수되었습니다.\n이름: ' + name + '\n전화: ' + phone);
-        return true;  // ★ 성공으로 간주 (no-cors는 결과를 못 읽음)
+      });
+  
+      alert('상담 신청이 접수되었습니다.\n이름: ' + name + '\n전화: ' + phone);
+      return true; // 성공으로 간주 (no-cors 특성)
     } catch (err) {
-        console.error('Submit failed:', err);
-        alert('전송 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
-        return false;
+      console.error('Submit failed:', err);
+      alert('전송 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+      return false;
     }
-}
+  }
 
   // Phone auto-formatting helpers
   function formatPhone(value) {
