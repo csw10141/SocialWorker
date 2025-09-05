@@ -171,31 +171,87 @@
     return { ok: nameOk && phoneOk, phoneSan: p };
   }
 
-  let _submitInFlight = false;
+  // 제출 진행 상태 UI 관리
+    let _submitInFlight = false;
+    let _cooldownTimer = null; // 연속 제출 쿨다운
+
+    function createOverlay(){
+    const el = document.createElement('div');
+    el.className = 'submitting-overlay';
+    el.innerHTML = `<div>등록 중입니다<span class="dot">...</span></div>`;
+    return el;
+    }
+    const overlayEl = createOverlay();
+
+    function setSubmitting(on, scope /* 'sticky' | 'modal' | 'any' */){
+    // 플래그
+    _submitInFlight = !!on;
+
+    // 오버레이
+    if (on) {
+        if (!document.body.contains(overlayEl)) document.body.appendChild(overlayEl);
+    } else {
+        if (document.body.contains(overlayEl)) document.body.removeChild(overlayEl);
+    }
+
+    // 폼 컨트롤 비활성화
+    const stickyControls = [nameInput, phoneInput, agreeInput, stickyForm && stickyForm.querySelector('[type="submit"]')].filter(Boolean);
+    const modalControls  = [modalName, modalPhone, modalAgree, modalForm && modalForm.querySelector('[type="submit"]')].filter(Boolean);
+
+    const disable = (arr, disabled) => arr.forEach(el => { try{ el.disabled = disabled; }catch(_){} });
+
+    if (scope === 'sticky') disable(stickyControls, on);
+    else if (scope === 'modal') disable(modalControls, on);
+    else {
+        disable(stickyControls, on);
+        disable(modalControls, on);
+    }
+
+    // 접근성
+    if (stickyForm) stickyForm.setAttribute('aria-busy', on ? 'true' : 'false');
+    if (modalForm)  modalForm.setAttribute('aria-busy',  on ? 'true' : 'false');
+    }
+
+    // 연속 제출 쿨다운(중복 방지)
+    function startCooldown(ms = 6000){
+    clearTimeout(_cooldownTimer);
+    _cooldownTimer = setTimeout(()=>{ _submitInFlight = false; }, ms);
+    }
+
 
   async function submitData(name, phone) {
-    // ★ Apps Script 배포 화면에서 복사한 전체 /exec URL을 끝까지 넣으세요 (… 금지)
-    const url = "https://script.google.com/macros/s/AKfycbxXAo-09FU64IKc0ysm8exbyqGgIPRst6-2NdEnqLux5oHVSSs2ZAeAXHgqfWqv8D9h/exec";
+
+    if (_submitInFlight) return false; // 중복 제출 즉시 차단
+    
+    const url = "https://script.google.com/macros/s/AKfycbzuBorWV63iF8rZAgO43bP3W3vklJovQMrD7EWSJOGuS9R87x-JN_s6NHrgwhvI9qBM/exec";
   
-    const device = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'mobile' : 'pc';
+    const device  = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'mobile' : 'pc';
     const payload = { name, phone, device };
-  
+
+    // UI: 등록 중 표시 & 컨트롤 잠금
+    setSubmitting(true, scope);
+
     try {
-      await fetch(url, {
+        // no-cors: 응답은 못 읽음. 성공/실패 판단 불가 → UX상 성공 가정.
+        await fetch(url, {
         method: 'POST',
-        mode: 'no-cors',                    // 응답은 못 읽어도 요청은 전송됨
-        headers: { 'Content-Type': 'text/plain' }, // 프리플라이트 회피
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify(payload)
-      });
-  
-      alert('상담 신청이 접수되었습니다.\n이름: ' + name + '\n전화: ' + phone);
-      return true; // 성공으로 간주 (no-cors 특성)
+        });
+
+        alert(`상담 신청이 접수되었습니다.\n이름: ${name}\n전화: ${phone}`);
+        // 중복 방지 쿨다운(네트워크/시트 반영 지연 대비)
+        startCooldown(6000);
+        return true;
     } catch (err) {
-      console.error('Submit failed:', err);
-      alert('전송 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
-      return false;
+        console.error('Submit failed:', err);
+        alert('전송 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+        return false;
+    } finally {
+        setSubmitting(false, scope);
     }
-  }
+}
 
   // Phone auto-formatting helpers
   function formatPhone(value) {
@@ -284,7 +340,7 @@ if (stickyForm) {
         alert('개인정보 처리방침에 동의해 주세요.');
         return;
       }
-      const success = await submitData(name, phoneSan);
+      const success = await submitData(name, phoneSan, 'sticky');
       if (success) stickyForm.reset(); // 성공시에만 reset
     });
   }
@@ -304,7 +360,7 @@ if (stickyForm) {
         alert('개인정보 처리방침에 동의해 주세요.');
         return;
       }
-      const success = await submitData(name, phoneSan);
+      const success = await submitData(name, phoneSan, 'modal');
       if (success) {
         closeModal();
         modalForm.reset();
@@ -325,4 +381,3 @@ if (stickyForm) {
     applyHotspotPosition(state.hotspotEl);
   })();
 })();
-
