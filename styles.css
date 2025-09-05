@@ -185,7 +185,7 @@ body {
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 14px;
   box-shadow: 0 16px 48px rgba(0,0,0,0.45);
-  padding: 20px 16px 18px;
+  padding: 22px 18px 20px; /* 상하 여백 약간 확장 */
   position: relative;
 }
 .policy-dialog { max-width: 860px; }
@@ -197,29 +197,29 @@ body {
   color: #e6e6e6;
 }
 .policy-content h3 { margin: 16px 0 8px; font-size: 16px; color: #fff; }
-.modal-title { margin: 0 0 6px; font-size: 20px; }
-.modal-desc { margin: 0 0 14px; opacity: 0.85; }
+.modal-title { margin: 0 0 10px; font-size: 21px; font-weight: 700; }
+.modal-desc { margin: 0 0 18px; opacity: 0.85; }
 .modal-close {
-  position: absolute; top: 6px; right: 8px;
+  position: absolute; top: 10px; right: 12px; /* 너무 붙어보이지 않게 여백 조정 */
   width: 36px; height: 36px;
-  border: none; border-radius: 8px;
+  border: none; border-radius: 10px;
   background: #1b2230; color: #fff; font-size: 20px;
   cursor: pointer;
 }
 .modal-close:hover { background: #222a3a; }
 
-.modal-form { display: grid; gap: 12px; }
+.modal-form { display: grid; gap: 14px; }
 .field { display: grid; gap: 6px; }
-.label { font-size: 14px; opacity: 0.9; }
+.label { font-size: 14px; opacity: 0.92; }
 .modal-form input[type="text"],
 .modal-form input[type="tel"] {
-  height: 44px;
+  height: 46px; /* 스티키 폼과 일관된 높이 */
   padding: 10px 12px;
   color: #fff;
   background: #151a22;
   border: 1px solid rgba(255,255,255,0.12);
   border-radius: 10px;
-  font-size: 16px;
+  font-size: 16px; /* 안전 폰트 크기 */
   -webkit-appearance: none;
   appearance: none;
   outline: none;
@@ -241,6 +241,7 @@ body {
   font-weight: 600;
   font-size:17px;
   cursor: pointer;
+  width: 100%; /* 버튼 가로폭을 폼 폭에 맞춰 안정감 */
 }
 .primary-btn:hover { background: #edf3ff; }
 
@@ -255,7 +256,7 @@ body {
 .edu-group {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px; /* 항목 간격 살짝 확대 */
 }
 .edu-group label {
   display: inline-flex;
