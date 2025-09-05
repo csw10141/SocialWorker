@@ -76,6 +76,15 @@ body {
   align-items: center;
   gap: 8px;
 }
+.sticky-form #nameInput {
+  /* 데스크탑 하단 바에서 이름 입력칸 너비 축소 */
+  flex: 0 0 120px; /* 고정 폭 느낌 */
+  max-width: 160px;
+}
+.sticky-form #phoneInput {
+  /* 휴대폰 입력은 남은 공간을 충분히 사용 */
+  flex: 1 1 auto;
+}
 .sticky-form input[type="text"],
 .sticky-form input[type="tel"] {
   flex: 1 1 140px;
@@ -179,6 +188,41 @@ body {
 }
 .primary-btn:hover { background: #2f6bd1; }
 
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,1px,1px);
+  white-space: nowrap; border: 0;
+}
+
+.edu-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.edu-group label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: #171a22;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 999px; /* pill */
+  font-size: 13px;
+  color: #eaeaea;
+  cursor: pointer;
+  user-select: none;
+}
+.edu-group input[type="checkbox"] {
+  width: 16px; height: 16px;
+  accent-color: #3b82f6; /* 체크 컬러 */
+}
+.edu-group label:hover {
+  background: #1c212c;
+  border-color: rgba(255,255,255,0.18);
+}
+
 /* Responsive tweaks */
 @media (max-width: 768px) {
   .bar-inner { flex-wrap: nowrap; }
@@ -193,6 +237,8 @@ body {
     row-gap: 10px;
     align-items: stretch;
   }
+  /* 모바일에서는 입력들이 가로 전체를 사용하는 것이 좋아 이름칸 별도 축소는 적용하지 않음 */
+  .sticky-form #nameInput { flex: 1 1 auto; max-width: none; }
   #nameInput { grid-column: 1; grid-row: 1; }
   #phoneInput { grid-column: 1; grid-row: 2; }
   .agree { grid-column: 2; grid-row: 1; justify-self: end; align-self: start; width: auto; }
@@ -212,4 +258,3 @@ body {
   
   /* 버튼 비활성 표시 */
   button[disabled], input[disabled] { opacity: .6; cursor: not-allowed; }
-  

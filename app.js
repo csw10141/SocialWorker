@@ -225,7 +225,7 @@
 
     if (_submitInFlight) return false; // 중복 제출 즉시 차단
     
-    const url = "https://script.google.com/macros/s/AKfycbzuBorWV63iF8rZAgO43bP3W3vklJovQMrD7EWSJOGuS9R87x-JN_s6NHrgwhvI9qBM/exec";
+    const url = "https://script.google.com/macros/s/AKfycbxXAo-09FU64IKc0ysm8exbyqGgIPRst6-2NdEnqLux5oHVSSs2ZAeAXHgqfWqv8D9h/exec";
   
     const device  = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'mobile' : 'pc';
     const payload = { name, phone, device, education: String(education || '') };
