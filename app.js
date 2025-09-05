@@ -179,22 +179,23 @@
 
     const device = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'mobile' : 'pc';
     const payload = { name, phone, device };
-  
+
     try {
-      // no-cors 모드: 응답을 읽을 수는 없지만 기록은 정상 진행
-      await fetch(url, {
+        await fetch(url, {
         method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain' },
+        mode: 'no-cors',                 // 응답은 읽지 않지만, 요청은 전송됨
+        headers: { 'Content-Type': 'text/plain' }, // 프리플라이트 회피용
         body: JSON.stringify(payload)
-      });
-  
-      alert('상담 신청이 접수되었습니다.\n이름: ' + name + '\n전화: ' + phone);
+        });
+
+        alert('상담 신청이 접수되었습니다.\n이름: ' + name + '\n전화: ' + phone);
+        return true;  // ★ 성공으로 간주 (no-cors는 결과를 못 읽음)
     } catch (err) {
-      console.error('Submit failed:', err);
-      alert('전송 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+        console.error('Submit failed:', err);
+        alert('전송 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+        return false;
     }
-  }
+}
 
   // Phone auto-formatting helpers
   function formatPhone(value) {
