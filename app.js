@@ -178,6 +178,10 @@
     let _submitInFlight = false;
     let _cooldownTimer = null; // 연속 제출 쿨다운
 
+    // 전송 엔드포인트: 기본은 동일 출처 API, 실패 시 GAS로 폴백
+    const API_URL = "/api/submit";
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbxXAo-09FU64IKc0ysm8exbyqGgIPRst6-2NdEnqLux5oHVSSs2ZAeAXHgqfWqv8D9h/exec";
+
     function createOverlay(){
     const el = document.createElement('div');
     el.className = 'submitting-overlay';
@@ -236,9 +240,9 @@
 
     if (_submitInFlight) return false; // 중복 제출 즉시 차단
     
-    // 동일 출처 API로 전송하여 서버에서 시트 기록
-    const url = "/api/submit";
-  
+    // 동일 출처 API 우선 시도, 실패 시 GAS로 폴백
+    const url = API_URL;
+   
     const device  = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'mobile' : 'pc';
     const payload = { name, phone, device, education: mapEduToKorean(education) };
 
@@ -246,27 +250,39 @@
     setSubmitting(true, scope);
 
     try {
-        const resp = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        if (!resp.ok) {
-          throw new Error(`HTTP ${resp.status}`);
+        let ok = false;
+        try {
+          const resp = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          ok = resp.ok;
+          if (!ok) throw new Error(`HTTP ${resp.status}`);
+          // 응답 본문은 선택적으로만 처리
+          await resp.json().catch(() => ({}));
+        } catch (apiErr) {
+          // API 실패(file://, 정적 호스팅, 배포 미완, CORS 등) 시 GAS로 폴백
+          await fetch(GAS_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify(payload)
+          });
+          ok = true; // no-cors는 응답 확인 불가 → 성공 가정
         }
-        const data = await resp.json().catch(() => ({ ok: true }));
-        alert(`상담 신청이 접수되었습니다.\n이름: ${name}\n전화: ${phone}`);
-        // 중복 방지 쿨다운(네트워크/시트 반영 지연 대비)
-        startCooldown(6000);
-        return true;
-    } catch (err) {
-        console.error('Submit failed:', err);
-        alert('전송 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
-        return false;
-    } finally {
-        setSubmitting(false, scope);
-    }
-}
+         alert(`상담 신청이 접수되었습니다.\n이름: ${name}\n전화: ${phone}`);
+         // 중복 방지 쿨다운(네트워크/시트 반영 지연 대비)
+         startCooldown(6000);
+         return true;
+     } catch (err) {
+         console.error('Submit failed:', err);
+         alert('전송 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+         return false;
+     } finally {
+         setSubmitting(false, scope);
+     }
+ }
 
   // Phone auto-formatting helpers
   function formatPhone(value) {
