@@ -119,7 +119,8 @@ body {
   background-position: right 10px center;
   background-size: 16px 16px;
   background-repeat: no-repeat;
-  font-size: 15px;
+  font-size: 16px;
+  font-weight: 600;
 }
 .sticky-form select#eduSelect:focus { outline: 2px solid rgba(59,130,246,0.5); outline-offset: 1px; }
 .sticky-form .submit-btn { white-space: nowrap; }
