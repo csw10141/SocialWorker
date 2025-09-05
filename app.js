@@ -174,53 +174,25 @@
   let _submitInFlight = false;
 
   async function submitData(name, phone) {
-    if (_submitInFlight) return false; // 중복 클릭 방지
+    // 본인 Apps Script 웹앱 /exec URL 넣으세요
+    const url = "https://script.google.com/macros/s/AKfycb.../exec";  
   
     const device = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'mobile' : 'pc';
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 12000); // 12초 타임아웃
+    const payload = { name, phone, device };
   
-    _submitInFlight = true;
     try {
-      const res = await fetch('/api/submit', {
+      // no-cors 모드: 응답을 읽을 수는 없지만 기록은 정상 진행
+      await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, phone, device }),
-        signal: controller.signal
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(payload)
       });
   
-      // JSON 우선 파싱(서버는 { ok: boolean, error?: string } 형태)
-      let payload = null;
-      try { payload = await res.json(); }
-      catch { payload = { ok: false, error: await res.text().catch(() => '') }; }
-  
-      if (!res.ok || !payload?.ok) {
-        // 서버 에러코드 매핑(필요시 추가)
-        const code = payload?.error || `HTTP_${res.status}`;
-        const map = {
-          name_required: '이름을 입력해 주세요.',
-          phone_invalid: '전화번호 형식이 올바르지 않습니다.',
-          internal_error: '서버 처리 중 오류가 발생했습니다.'
-        };
-        alert(map[code] || `전송 실패: ${code}`);
-        return false;
-      }
-  
-      // 성공 알림(보기 좋게 포맷)
-      const pretty = formatPhone(phone);
-      alert(`상담 신청이 접수되었습니다.\n이름: ${name}\n전화: ${pretty || phone}`);
-      return true;
+      alert('상담 신청이 접수되었습니다.\n이름: ' + name + '\n전화: ' + phone);
     } catch (err) {
-      if (err?.name === 'AbortError') {
-        alert('응답 지연으로 전송이 취소되었습니다. 네트워크 상태 확인 후 다시 시도해 주세요.');
-      } else {
-        console.error('Submit failed:', err);
-        alert('전송 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
-      }
-      return false;
-    } finally {
-      clearTimeout(timeoutId);
-      _submitInFlight = false;
+      console.error('Submit failed:', err);
+      alert('전송 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
     }
   }
 
