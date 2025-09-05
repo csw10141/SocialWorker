@@ -100,7 +100,18 @@ body {
   border-radius: 10px;
   font-size: 16px;
   font-weight: 600;
-
+  -webkit-appearance: none;
+  appearance: none;
+  outline: none;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+.sticky-form input[type="text"]::placeholder,
+.sticky-form input[type="tel"]::placeholder { color: #6b7280; }
+.sticky-form input[type="text"]:focus,
+.sticky-form input[type="tel"]:focus {
+  outline: none;
+  border-color: rgba(59,130,246,0.6);
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.25);
 }
 .sticky-form select#eduSelect {
   /* 작은 셀렉트 박스 */
@@ -123,7 +134,11 @@ body {
   font-size: 16px;
   font-weight: 600;
 }
-.sticky-form select#eduSelect:focus { outline: 2px solid rgba(59,130,246,0.5); outline-offset: 1px; }
+.sticky-form select#eduSelect:focus {
+  outline: none;
+  border-color: rgba(59,130,246,0.6);
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.25);
+}
 .sticky-form .submit-btn { white-space: nowrap; }
 
 /* 동의 체크박스 라벨 */
@@ -205,6 +220,17 @@ body {
   border: 1px solid rgba(255,255,255,0.12);
   border-radius: 10px;
   font-size: 16px;
+  -webkit-appearance: none;
+  appearance: none;
+  outline: none;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+.modal-form input[type="text"]::placeholder,
+.modal-form input[type="tel"]::placeholder { color: #8a93a6; }
+.modal-form input[type="text"]:focus,
+.modal-form input[type="tel"]:focus {
+  border-color: rgba(59,130,246,0.6);
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.25);
 }
 .primary-btn {
   height: 46px;
