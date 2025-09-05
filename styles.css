@@ -305,10 +305,11 @@ body {
 .submitting-overlay{
     position: fixed; inset: 0; background: rgba(0,0,0,.45);
     display: flex; align-items: center; justify-content: center;
-    color: #fff; font-size: 18px; z-index: 9999;
+    color: #fff; font-size: 18px; z-index: 9999; font-weight:600;
   }
   .submitting-overlay .dot{ animation: blink 1s infinite steps(2,start); }
   @keyframes blink { 50% { opacity: .3; } }
   
   /* 버튼 비활성 표시 */
+
   button[disabled], input[disabled] { opacity: .6; cursor: not-allowed; }
