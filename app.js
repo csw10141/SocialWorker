@@ -219,7 +219,7 @@
     }
 
 
-  async function submitData(name, phone) {
+  async function submitData(name, phone, scope = 'any') {
 
     if (_submitInFlight) return false; // 중복 제출 즉시 차단
     
@@ -381,3 +381,4 @@ if (stickyForm) {
     applyHotspotPosition(state.hotspotEl);
   })();
 })();
+
