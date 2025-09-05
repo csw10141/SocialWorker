@@ -50,11 +50,23 @@ module.exports = async function handler(req, res) {
     const phoneDigits = sanitizePhoneDigits(body.phone);
     const device = (body.device === 'mobile' || body.device === 'pc') ? body.device : 'unknown';
     // education -> 시트의 'Other' 컬럼에 저장할 값으로 정규화
-    const educationArr = Array.isArray(body.education)
-      ? body.education.map(v => String(v || '').trim()).filter(Boolean)
+    const rawArr = Array.isArray(body.education)
+      ? body.education.map(v => String(v || '')).filter(Boolean)
       : (body.education != null && String(body.education).trim().length > 0
-          ? [String(body.education).trim()]
+          ? [String(body.education)]
           : []);
+    // 문자열 내 콤마 구분 처리 + 코드→한글 라벨 매핑
+    const MAP = { highschool: '고졸', associate: '초대졸', college: '대졸', other: '기타' };
+    const toKorean = (s) => {
+      const t = String(s || '').trim();
+      const key = t.toLowerCase();
+      return MAP[key] || t; // 이미 한글이면 그대로 유지
+    };
+    const educationArr = rawArr
+      .flatMap(v => String(v).split(','))
+      .map(s => s.trim())
+      .filter(Boolean)
+      .map(toKorean);
     const otherValue = educationArr.join(',');
 
     if (!name) return res.status(400).json({ ok: false, error: 'name_required' });

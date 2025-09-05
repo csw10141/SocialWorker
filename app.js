@@ -221,28 +221,40 @@
     _cooldownTimer = setTimeout(()=>{ _submitInFlight = false; }, ms);
     }
 
+  // 학력 코드 → 한글 라벨 매핑
+  function mapEduToKorean(code) {
+    switch (String(code || '').trim()) {
+      case 'highschool': return '고졸';
+      case 'associate':  return '초대졸';
+      case 'college':    return '대졸';
+      case 'other':      return '기타';
+      default:           return '';
+    }
+  }
 
   async function submitData(name, phone, scope = 'any', education = '') {
 
     if (_submitInFlight) return false; // 중복 제출 즉시 차단
     
-    const url = "https://script.google.com/macros/s/AKfycbxXAo-09FU64IKc0ysm8exbyqGgIPRst6-2NdEnqLux5oHVSSs2ZAeAXHgqfWqv8D9h/exec";
+    // 동일 출처 API로 전송하여 서버에서 시트 기록
+    const url = "/api/submit";
   
     const device  = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'mobile' : 'pc';
-    const payload = { name, phone, device, education: String(education || '') };
+    const payload = { name, phone, device, education: mapEduToKorean(education) };
 
     // UI: 등록 중 표시 & 컨트롤 잠금
     setSubmitting(true, scope);
 
     try {
-        // no-cors: 응답은 못 읽음. 성공/실패 판단 불가 → UX상 성공 가정.
-        await fetch(url, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(payload)
+        const resp = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
         });
-
+        if (!resp.ok) {
+          throw new Error(`HTTP ${resp.status}`);
+        }
+        const data = await resp.json().catch(() => ({ ok: true }));
         alert(`상담 신청이 접수되었습니다.\n이름: ${name}\n전화: ${phone}`);
         // 중복 방지 쿨다운(네트워크/시트 반영 지연 대비)
         startCooldown(6000);
