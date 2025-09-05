@@ -206,14 +206,15 @@ body {
 }
 .primary-btn {
   height: 46px;
-  background: #3b82f6;
-  color: #fff;
+  background: #2ee257;
+  color: #000;
   border: none;
   border-radius: 10px;
-  font-weight: 700;
+  font-weight: 600;
+  font-size:17px;
   cursor: pointer;
 }
-.primary-btn:hover { background: #2f6bd1; }
+.primary-btn:hover { background: #252b39; }
 
 .sr-only {
   position: absolute;
