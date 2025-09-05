@@ -5,6 +5,7 @@
   const stickyForm = document.getElementById('stickyForm');
   const nameInput = document.getElementById('nameInput');
   const phoneInput = document.getElementById('phoneInput');
+  const eduSelect = document.getElementById('eduSelect');
   const agreeInput = document.getElementById('agreeInput');
   const openPolicyFromSticky = document.getElementById('openPolicyFromSticky');
 
@@ -14,6 +15,7 @@
   const modalForm = document.getElementById('modalForm');
   const modalName = document.getElementById('modalName');
   const modalPhone = document.getElementById('modalPhone');
+  const modalEdu = document.getElementById('modalEdu');
   const modalAgree = document.getElementById('modalAgree');
   const openPolicyFromModal = document.getElementById('openPolicyFromModal');
 
@@ -195,8 +197,8 @@
     }
 
     // 폼 컨트롤 비활성화
-    const stickyControls = [nameInput, phoneInput, agreeInput, stickyForm && stickyForm.querySelector('[type="submit"]')].filter(Boolean);
-    const modalControls  = [modalName, modalPhone, modalAgree, modalForm && modalForm.querySelector('[type="submit"]')].filter(Boolean);
+    const stickyControls = [nameInput, phoneInput, eduSelect, agreeInput, stickyForm && stickyForm.querySelector('[type="submit"]')].filter(Boolean);
+    const modalControls  = [modalName, modalPhone, modalEdu, modalAgree, modalForm && modalForm.querySelector('[type="submit"]')].filter(Boolean);
 
     const disable = (arr, disabled) => arr.forEach(el => { try{ el.disabled = disabled; }catch(_){} });
 
@@ -219,14 +221,14 @@
     }
 
 
-  async function submitData(name, phone, scope = 'any') {
+  async function submitData(name, phone, scope = 'any', education = '') {
 
     if (_submitInFlight) return false; // 중복 제출 즉시 차단
     
-    const url = "https://script.google.com/macros/s/AKfycbxXAo-09FU64IKc0ysm8exbyqGgIPRst6-2NdEnqLux5oHVSSs2ZAeAXHgqfWqv8D9h/exec";
+    const url = "https://script.google.com/macros/s/AKfycbzuBorWV63iF8rZAgO43bP3W3vklJovQMrD7EWSJOGuS9R87x-JN_s6NHrgwhvI9qBM/exec";
   
     const device  = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'mobile' : 'pc';
-    const payload = { name, phone, device };
+    const payload = { name, phone, device, education: String(education || '') };
 
     // UI: 등록 중 표시 & 컨트롤 잠금
     setSubmitting(true, scope);
@@ -340,7 +342,8 @@ if (stickyForm) {
         alert('개인정보 처리방침에 동의해 주세요.');
         return;
       }
-      const success = await submitData(name, phoneSan, 'sticky');
+      const education = eduSelect ? (eduSelect.value || '') : '';
+      const success = await submitData(name, phoneSan, 'sticky', education);
       if (success) stickyForm.reset(); // 성공시에만 reset
     });
   }
@@ -360,7 +363,8 @@ if (stickyForm) {
         alert('개인정보 처리방침에 동의해 주세요.');
         return;
       }
-      const success = await submitData(name, phoneSan, 'modal');
+      const education = modalEdu ? (modalEdu.value || '') : '';
+      const success = await submitData(name, phoneSan, 'modal', education);
       if (success) {
         closeModal();
         modalForm.reset();
@@ -381,5 +385,3 @@ if (stickyForm) {
     applyHotspotPosition(state.hotspotEl);
   })();
 })();
-
-

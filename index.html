@@ -17,6 +17,13 @@
       <form id="stickyForm" class="sticky-form" autocomplete="on">
         <input type="text" id="nameInput" name="name" placeholder="이름" aria-label="이름" required />
         <input type="tel" id="phoneInput" name="phone" placeholder="휴대폰 번호" aria-label="휴대폰 번호" inputmode="tel" required />
+        <select id="eduSelect" name="education" aria-label="최종학력(선택)">
+          <option value="">최종학력(선택)</option>
+          <option value="highschool">고졸</option>
+          <option value="associate">초대졸</option>
+          <option value="college">대졸</option>
+          <option value="other">기타</option>
+        </select>
         <label class="agree">
           <input type="checkbox" id="agreeInput" required />
           <span>
@@ -43,10 +50,20 @@
           <span class="label">휴대폰 번호</span>
           <input type="tel" id="modalPhone" name="phone" placeholder="예) 01012345678" inputmode="tel" required />
         </label>
+        <label class="field">
+          <span class="label">최종학력(선택)</span>
+          <select id="modalEdu" name="education" aria-label="최종학력(선택)">
+            <option value="">선택 안 함</option>
+            <option value="highschool">고졸</option>
+            <option value="associate">초대졸</option>
+            <option value="college">대졸</option>
+            <option value="other">기타</option>
+          </select>
+        </label>
         <label class="field agree" style="display:block;">
           <input type="checkbox" id="modalAgree" required />
           <span>
-            개인정보 처리방침 동의 (<a href="#" id="openPolicyFromModal">전문보기</a>)
+            개인정보 처리방침 동의 [<a href="#" id="openPolicyFromModal">보기</a>]
           </span>
         </label>
         <button type="submit" class="primary-btn">상담 신청하기</button>

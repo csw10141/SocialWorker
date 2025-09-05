@@ -49,6 +49,7 @@ module.exports = async function handler(req, res) {
     const name = String((body.name || '')).trim();
     const phoneDigits = sanitizePhoneDigits(body.phone);
     const device = (body.device === 'mobile' || body.device === 'pc') ? body.device : 'unknown';
+    const education = String(body.education || ''); // 선택 항목
 
     if (!name) return res.status(400).json({ ok: false, error: 'name_required' });
     if (phoneDigits.length < 10 || phoneDigits.length > 11) {
@@ -69,13 +70,13 @@ module.exports = async function handler(req, res) {
     // 헤더 보장(선택): 첫 행이 비어 있다면 헤더 한 번 세팅
     // 필요 없으면 이 블록 제거해도 됩니다.
     await ensureHeadersIfEmpty(sheets, spreadsheetId, sheetName, [
-      'created_at','name','phone','device','ip','user_agent','referer'
+      'created_at','name','phone','education','device','ip','user_agent','referer'
     ]);
 
     // 행 추가
     const userAgent = String(req.headers['user-agent'] || '');
     const referer = String(req.headers['referer'] || '');
-    const values = [[created_at, name, phoneDigits, device, ip, userAgent, referer]];
+    const values = [[created_at, name, phoneDigits, education, device, ip, userAgent, referer]];
 
     await sheets.spreadsheets.values.append({
       spreadsheetId,
@@ -87,7 +88,7 @@ module.exports = async function handler(req, res) {
 
     return res.status(200).json({
       ok: true,
-      data: { name, phone: phoneDigits, device, ip, created_at }
+      data: { name, phone: phoneDigits, education, device, ip, created_at }
     });
   } catch (err) {
     console.error('submit error:', err?.message || err, err?.stack || '');
