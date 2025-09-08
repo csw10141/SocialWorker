@@ -305,6 +305,32 @@ body {
   border-top: 6px solid #11141a; /* arrow color matches bubble */
 }
 
+/* 푸시 알림 배너 */
+.pushAlarm {
+  width: 100%;
+  max-width: 700px;
+  text-align: center;
+  padding: 25px 0;
+  color: #fff;
+  background: #111;
+  opacity: 0; /* JS에서 0 -> .8로 전환 */
+  border-radius: 10px;
+  font-weight: 500;
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: max(10%, 88px); /* 하단 스티키 폼(72px+여백) 위에 안전히 위치 */
+  display: none;
+  font-size: 26px;
+  z-index: 9999; /* bottom-bar(100)보다 위 */
+  margin: 0;
+  pointer-events: none; /* 클릭 방해 방지 */
+  transition: opacity 1.5s ease, transform 1.5s ease; /* 페이드/살짝 이동 */
+}
+
+/* 하이라이트 텍스트 보조 */
+.pushAlarm .highlight { color: #2ee257; font-weight: 700; }
+
 /* Responsive tweaks */
 @media (max-width: 768px) {
   .bar-inner { flex-wrap: nowrap; }

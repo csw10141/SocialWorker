@@ -78,7 +78,8 @@
     modalOpen: false,
     policyOpen: false,
     hotspotEl: null,
-    mql: window.matchMedia('(max-width: 768px)')
+    mql: window.matchMedia('(max-width: 768px)'),
+    pushAlarmTimer: null
   };
 
   function applyHotspotPosition(el) {
@@ -185,7 +186,7 @@
     function createOverlay(){
     const el = document.createElement('div');
     el.className = 'submitting-overlay';
-    el.innerHTML = `<div>등록 중입니다<span class="dot">...</span></div>`;
+    el.innerHTML = `<div style='font-weight:600;'>등록 중입니다<span class="dot">...</span></div>`;
     return el;
     }
     const overlayEl = createOverlay();
@@ -402,6 +403,64 @@
   attachPhoneAutoFormat(phoneInput);
   attachPhoneAutoFormat(modalPhone);
 
+  // ===== Push Alarm ticker =====
+  function startPushAlarmTicker(intervalMs = 6000) {
+     try {
+       const items = Array.from(document.querySelectorAll('.pushAlarm'));
+       if (!items.length) return;
+       // 초기 상태: 모두 숨김 + 투명
+       items.forEach(el => { el.style.display = 'none'; el.style.opacity = '0'; });
+
+       // 정밀 타이밍(밀리초)
+       const FADE_MS = 1500; // 1.5초 페이드 (styles.css transition과 일치)
+       const HOLD_MS = 1500; // 1.5초 유지(보이는 상태)
+       const GAP_MS  = 100; // 1.5초 공백(완전히 사라진 뒤)
+
+       let index = -1;
+       let timer = null;
+
+       const clearTimer = () => { if (state.pushAlarmTimer) { clearTimeout(state.pushAlarmTimer); state.pushAlarmTimer = null; } if (timer) { clearTimeout(timer); timer = null; } };
+
+       const fadeOutPrev = (el) => {
+         if (!el) return; // 첫 사이클
+         el.style.opacity = '0';
+         el.style.transform = 'translate(-50%, 10px)';
+         // 페이드 아웃 종료 시점에 display:none 처리
+         setTimeout(() => { el.style.display = 'none'; }, FADE_MS + 20);
+       };
+
+       const fadeInNext = (el) => {
+         if (!el) return;
+         el.style.display = 'block';
+         el.style.opacity = '0';
+         el.style.transform = 'translate(-50%, 10px)';
+         // reflow to ensure transition triggers
+         void el.offsetWidth;
+         el.style.opacity = '0.8';
+         el.style.transform = 'translate(-50%, 0)';
+       };
+
+       const tick = () => {
+         // 1) 이전 요소 페이드아웃 (1.5s)
+         const prevEl = index >= 0 ? items[index] : null;
+         fadeOutPrev(prevEl);
+
+         // 2) 공백(1.5s) 후 다음 요소 페이드인 (1.5s)
+         timer = setTimeout(() => {
+           index = (index + 1) % items.length;
+           const nextEl = items[index];
+           fadeInNext(nextEl);
+           // 3) 유지(1.5s) 후 다음 사이클 시작 (다시 1)로 복귀)
+           state.pushAlarmTimer = setTimeout(tick, HOLD_MS);
+         }, FADE_MS + GAP_MS);
+       };
+
+       // 중복 실행 방지 후 시작
+       clearTimer();
+       tick();
+     } catch (e) { console.warn('pushAlarm ticker init failed:', e); }
+   }
+
   // 상담 모달 바인딩
   if (modalClose) modalClose.addEventListener('click', closeModal);
   if (modal) {
@@ -495,5 +554,7 @@
     renderGallery(state.images);
     // Apply once after render in case of initial mobile viewport
     applyHotspotPosition(state.hotspotEl);
+    // 푸시 알림 순차 노출 시작(요소가 있으면 동작) - 총 6초 사이클(페이드인 1.5s, 유지 1.5s, 페이드아웃 1.5s, 공백 1.5s)
+    startPushAlarmTicker(6000);
   })();
 })();
