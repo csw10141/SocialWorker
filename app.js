@@ -95,6 +95,19 @@
     el.style.transform = 'translate(-50%, -50%)';
   }
 
+  // ===== PushAlarm 위치 보정: 항상 하단 입력폼 위에 표시 =====
+  function updatePushAlarmPosition() {
+    try {
+      const bar = document.querySelector('.bottom-bar');
+      const barH = bar ? Math.ceil(bar.getBoundingClientRect().height) : 88; // fallback
+      const gap = 12; // 입력폼과의 간격
+      const bottomPx = Math.max(0, barH + gap);
+      document.querySelectorAll('.pushAlarm').forEach(el => {
+        el.style.bottom = bottomPx + 'px';
+      });
+    } catch(_) {}
+  }
+
   function renderGallery(urls) {
     gallery.innerHTML = '';
     state.hotspotEl = null;
@@ -127,10 +140,14 @@
   // Update hotspot on viewport change
   function handleViewportChange() {
     applyHotspotPosition(state.hotspotEl);
+    updatePushAlarmPosition();
   }
   state.mql.addEventListener ? state.mql.addEventListener('change', handleViewportChange)
                              : state.mql.addListener(handleViewportChange); // Safari legacy
   window.addEventListener('resize', handleViewportChange);
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', updatePushAlarmPosition);
+  }
 
   // Modal helpers
   function openModal(prefill = true) {
@@ -554,6 +571,8 @@
     renderGallery(state.images);
     // Apply once after render in case of initial mobile viewport
     applyHotspotPosition(state.hotspotEl);
+    // pushAlarm 위치 초기 보정
+    updatePushAlarmPosition();
     // 푸시 알림 순차 노출 시작(요소가 있으면 동작) - 총 6초 사이클(페이드인 1.5s, 유지 1.5s, 페이드아웃 1.5s, 공백 1.5s)
     startPushAlarmTicker(6000);
   })();

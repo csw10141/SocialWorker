@@ -319,7 +319,7 @@ body {
   position: fixed;
   left: 50%;
   transform: translateX(-50%);
-  bottom: max(10%, 88px); /* 하단 스티키 폼(72px+여백) 위에 안전히 위치 */
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 88px); /* 기본 안전 위치; JS에서 스티키 바 높이에 맞춰 갱신 */
   display: none;
   font-size: 26px;
   z-index: 9999; /* bottom-bar(100)보다 위 */
