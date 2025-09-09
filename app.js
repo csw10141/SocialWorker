@@ -102,19 +102,21 @@
       const footer = document.querySelector('.site-footer');
       const barH = bar ? Math.ceil(bar.getBoundingClientRect().height) : 88; // fallback
       const gap = 12; // 입력폼/푸터와의 간격
-      const safe = (window.visualViewport && window.visualViewport.height !== window.innerHeight)
+      const isMobile = state.mql && (state.mql.matches === true);
+      const safe = isMobile && window.visualViewport && (window.visualViewport.height !== window.innerHeight)
         ? (window.innerHeight - window.visualViewport.height)
         : 0;
 
       let bottomPx = Math.max(0, barH + gap + safe);
 
-      // 푸터가 뷰포트 안에 들어온 경우, 푸터 ‘위’로 밀어 올림
-      if (footer) {
-        const fr = footer.getBoundingClientRect();
-        // footer.top 이 뷰포트 하단보다 위쪽이면(=보임), 겹치는 높이만큼 보정
-        if (fr.top < window.innerHeight) {
-          const overlapFromBottom = Math.max(0, window.innerHeight - fr.top); // 푸터가 차지하는 하단 영역
-          bottomPx = Math.max(bottomPx, overlapFromBottom + gap + safe);
+      if (isMobile) {
+        // 모바일에서만 푸터 보정 적용
+        if (footer) {
+          const fr = footer.getBoundingClientRect();
+          if (fr.top < window.innerHeight) {
+            const overlapFromBottom = Math.max(0, window.innerHeight - fr.top);
+            bottomPx = Math.max(bottomPx, overlapFromBottom + gap + safe);
+          }
         }
       }
 
