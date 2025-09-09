@@ -370,3 +370,21 @@ body {
 
 /* 전역 폼 컨트롤 폰트 크기 보정 (iOS 자동 확대 방지) */
 input, select, textarea, button { font-size: 16px; }
+
+/* 사이트 푸터: 사업자 정보 */
+.site-footer {
+  width: 100%;
+  max-width: 960px;
+  margin: 24px auto 108px; /* 하단 고정 바(72px)+여백 고려 */
+  padding: 12px 16px;
+  color: #cfd6e4;
+  font-size: 13px;
+  line-height: 1.6;
+  opacity: .9;
+}
+.site-footer__line { margin: 0 0 4px; }
+.site-footer__line:last-child { margin-bottom: 0; }
+
+@media (max-width: 768px) {
+  .site-footer { font-size: 12px; margin-bottom: 120px; padding: 10px 12px; }
+}
