@@ -99,9 +99,25 @@
   function updatePushAlarmPosition() {
     try {
       const bar = document.querySelector('.bottom-bar');
+      const footer = document.querySelector('.site-footer');
       const barH = bar ? Math.ceil(bar.getBoundingClientRect().height) : 88; // fallback
-      const gap = 12; // 입력폼과의 간격
-      const bottomPx = Math.max(0, barH + gap);
+      const gap = 12; // 입력폼/푸터와의 간격
+      const safe = (window.visualViewport && window.visualViewport.height !== window.innerHeight)
+        ? (window.innerHeight - window.visualViewport.height)
+        : 0;
+
+      let bottomPx = Math.max(0, barH + gap + safe);
+
+      // 푸터가 뷰포트 안에 들어온 경우, 푸터 ‘위’로 밀어 올림
+      if (footer) {
+        const fr = footer.getBoundingClientRect();
+        // footer.top 이 뷰포트 하단보다 위쪽이면(=보임), 겹치는 높이만큼 보정
+        if (fr.top < window.innerHeight) {
+          const overlapFromBottom = Math.max(0, window.innerHeight - fr.top); // 푸터가 차지하는 하단 영역
+          bottomPx = Math.max(bottomPx, overlapFromBottom + gap + safe);
+        }
+      }
+
       document.querySelectorAll('.pushAlarm').forEach(el => {
         el.style.bottom = bottomPx + 'px';
       });
@@ -145,6 +161,7 @@
   state.mql.addEventListener ? state.mql.addEventListener('change', handleViewportChange)
                              : state.mql.addListener(handleViewportChange); // Safari legacy
   window.addEventListener('resize', handleViewportChange);
+  window.addEventListener('scroll', updatePushAlarmPosition, { passive: true });
   if (window.visualViewport) {
     window.visualViewport.addEventListener('resize', updatePushAlarmPosition);
   }
