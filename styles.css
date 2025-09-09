@@ -375,13 +375,15 @@ input, select, textarea, button { font-size: 16px; }
 .site-footer {
   width: 100%;
   max-width: 960px;
-  margin: 24px auto 108px; /* 하단 고정 바(72px)+여백 고려 */
+  margin: 24px auto 114px; /* 하단 고정 바(72px)+여백 고려 */
   padding: 12px 16px;
-  color: #cfd6e4;
-  font-size: 13px;
-  line-height: 1.6;
+  color: #ffffff;
+  border-top:1px solid #eeeeee26;
+  font-size: 16px;
   opacity: .9;
+  text-align:center;
 }
+.site-footer__line:first-child{margin-top:10px;}
 .site-footer__line { margin: 0 0 4px; }
 .site-footer__line:last-child { margin-bottom: 0; }
 
