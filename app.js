@@ -27,16 +27,16 @@
   // Hotspot position config (percentages relative to image container)
   // Desktop vs Mobile separate values
   const HOTSPOT_CONFIG = {
-    index: 3, // zero-based index for 4th image
-    desktop: { top: 57, left: 50, width: 74, height: 16 },
-    mobile:  { top: 60, left: 50, width: 84, height: 18 } // tuned for <=768px
+    index: 5, // zero-based index for 6th (last) image
+    desktop: { top: 50, left: 50, width: 60, height: 18 },
+    mobile:  { top: 50, left: 50, width: 70, height: 20 } // centered for <=768px
   };
 
   /**
    * images/ 폴더의 이미지를 숫자 순서로 탐색합니다.
    * 1..50까지 gif/png/jpg/jpeg/webp 확장자를 시도하고, 연속 미스가 일정 횟수 넘으면 중단합니다.
    */
-  async function discoverImages(maxTry = 4, consecutiveMissLimit = 5) {
+  async function discoverImages(maxTry = 7, consecutiveMissLimit = 8) {
     const exts = ['gif', 'png', 'jpg', 'jpeg', 'webp'];
     const found = [];
 
@@ -44,7 +44,7 @@
     for (let i = 1; i <= maxTry; i++) {
       let matched = null;
       for (const ext of exts) {
-        const url = `images/${i}.${ext}`;
+        const url = `images/new/${i}.${ext}`;
         // eslint-disable-next-line no-await-in-loop
         const ok = await canLoad(url);
         if (ok) { matched = url; break; }
@@ -139,7 +139,7 @@
       img.alt = `이미지 ${i + 1}`;
       item.appendChild(img);
 
-      // 4번째 이미지에만 핫스팟 버튼 추가
+      // 6번째 이미지에만 핫스팟 버튼 추가
       if (i === HOTSPOT_CONFIG.index) {
         const hotspot = document.createElement('button');
         hotspot.type = 'button';
@@ -581,10 +581,10 @@
 
   // Initialize
   (async function init(){
-    state.images = await discoverImages(4, 3);
+    state.images = await discoverImages(6, 3);
     if (state.images.length === 0) {
       const fallback = [];
-      for (let i = 1; i <= 10; i++) fallback.push(`images/${i}.gif`);
+      for (let i = 1; i <= 6; i++) fallback.push(`images/${i}.gif`);
       state.images = fallback;
     }
     renderGallery(state.images);
