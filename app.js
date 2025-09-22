@@ -27,7 +27,7 @@
   // Hotspot position config (percentages relative to image container)
   // Desktop vs Mobile separate values
   const HOTSPOT_CONFIG = {
-    index: 5, // zero-based index for 6th (last) image
+    index: 6, // zero-based index for 7th (last) image
     desktop: { top: 50, left: 50, width: 60, height: 18 },
     mobile:  { top: 50, left: 50, width: 70, height: 20 } // centered for <=768px
   };
@@ -139,7 +139,7 @@
       img.alt = `이미지 ${i + 1}`;
       item.appendChild(img);
 
-      // 6번째 이미지에만 핫스팟 버튼 추가
+      // 7번째 이미지에만 핫스팟 버튼 추가
       if (i === HOTSPOT_CONFIG.index) {
         const hotspot = document.createElement('button');
         hotspot.type = 'button';
@@ -581,10 +581,10 @@
 
   // Initialize
   (async function init(){
-    state.images = await discoverImages(6, 3);
+    state.images = await discoverImages(7, 3);
     if (state.images.length === 0) {
       const fallback = [];
-      for (let i = 1; i <= 6; i++) fallback.push(`images/${i}.gif`);
+      for (let i = 1; i <= 7; i++) fallback.push(`images/${i}.gif`);
       state.images = fallback;
     }
     renderGallery(state.images);
