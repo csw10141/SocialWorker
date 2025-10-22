@@ -27,9 +27,9 @@
   // Hotspot position config (percentages relative to image container)
   // Desktop vs Mobile separate values
   const HOTSPOT_CONFIG = {
-    index: 6, // zero-based index for 7th (last) image
-    desktop: { top: 50, left: 50, width: 60, height: 18 },
-    mobile:  { top: 50, left: 50, width: 70, height: 20 } // centered for <=768px
+    index: 3, // zero-based index for 4th image
+    desktop: { top: 85, left: 50, width: 73, height: 8 },
+    mobile:  { top: 85, left: 50, width: 73, height: 8 } // near-bottom for <=768px
   };
 
   /**
@@ -44,7 +44,7 @@
     for (let i = 1; i <= maxTry; i++) {
       let matched = null;
       for (const ext of exts) {
-        const url = `images/new/${i}.${ext}`;
+        const url = `images/v2/${i}.${ext}`;
         // eslint-disable-next-line no-await-in-loop
         const ok = await canLoad(url);
         if (ok) { matched = url; break; }
@@ -139,7 +139,7 @@
       img.alt = `이미지 ${i + 1}`;
       item.appendChild(img);
 
-      // 7번째 이미지에만 핫스팟 버튼 추가
+      // 4번째 이미지에만 핫스팟 버튼 추가
       if (i === HOTSPOT_CONFIG.index) {
         const hotspot = document.createElement('button');
         hotspot.type = 'button';
@@ -581,10 +581,14 @@
 
   // Initialize
   (async function init(){
-    state.images = await discoverImages(7, 3);
+    state.images = await discoverImages(4, 3);
     if (state.images.length === 0) {
       const fallback = [];
-      for (let i = 1; i <= 7; i++) fallback.push(`images/${i}.gif`);
+      // 1~3: png, 4: gif
+      fallback.push('images/1.png');
+      fallback.push('images/2.png');
+      fallback.push('images/3.png');
+      fallback.push('images/4.gif');
       state.images = fallback;
     }
     renderGallery(state.images);
