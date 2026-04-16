@@ -385,7 +385,7 @@ body {
     background: rgb(17 17 20 / 92%);
     border-top: 1px solid rgba(255,255,255,0.06);
   }
-  .gallery { padding: 0 0 80px; gap: 0; }
+  .gallery { padding: 0; gap: 0; }
   .gallery-item img { border-radius: 0; box-shadow: none; }
   .policy-dialog { max-width: calc(100% - 24px); }
 }
