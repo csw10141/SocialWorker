@@ -305,27 +305,29 @@ body {
   border-top: 6px solid #11141a; /* arrow color matches bubble */
 }
 
-/* 푸시 알림 배너 */
+/* 푸시 알림 배너 - 상단 고정 */
 .pushAlarm {
   width: 100%;
   max-width: 700px;
   text-align: center;
-  padding: 25px 0;
+  padding: 14px 16px;
   color: #fff;
-  background: #111;
-  opacity: 0; /* JS에서 0 -> .8로 전환 */
-  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  border-radius: 0 0 12px 12px;
   font-weight: 500;
   position: fixed;
   left: 50%;
   transform: translateX(-50%);
-  bottom: calc(env(safe-area-inset-bottom, 0px) + 88px); /* 기본 안전 위치; JS에서 스티키 바 높이에 맞춰 갱신 */
+  top: 0;
+  bottom: auto;
   display: none;
-  font-size: 26px;
-  z-index: 99; /* bottom-bar(100)보다 아래 → 폼 가리지 않음 */
+  font-size: 15px;
+  z-index: 200;
   margin: 0;
-  pointer-events: none; /* 클릭 방해 방지 */
-  transition: opacity 1.5s ease, transform 1.5s ease; /* 페이드/살짝 이동 */
+  pointer-events: none;
+  transition: opacity 1.5s ease, transform 1.5s ease;
 }
 
 /* 하이라이트 텍스트 보조 */

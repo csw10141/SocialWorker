@@ -95,35 +95,9 @@
     el.style.transform = 'translate(-50%, -50%)';
   }
 
-  // ===== PushAlarm 위치 보정: 항상 하단 입력폼 위에 표시 =====
+  // ===== PushAlarm: 상단 고정 (위치 보정 불필요) =====
   function updatePushAlarmPosition() {
-    try {
-      const bar = document.querySelector('.bottom-bar');
-      const footer = document.querySelector('.site-footer');
-      const barH = bar ? Math.ceil(bar.getBoundingClientRect().height) : 88; // fallback
-      const gap = 12; // 입력폼/푸터와의 간격
-      const isMobile = state.mql && (state.mql.matches === true);
-      const safe = isMobile && window.visualViewport && (window.visualViewport.height !== window.innerHeight)
-        ? (window.innerHeight - window.visualViewport.height)
-        : 0;
-
-      let bottomPx = Math.max(0, barH + gap + safe);
-
-      if (isMobile) {
-        // 모바일에서만 푸터 보정 적용
-        if (footer) {
-          const fr = footer.getBoundingClientRect();
-          if (fr.top < window.innerHeight) {
-            const overlapFromBottom = Math.max(0, window.innerHeight - fr.top);
-            bottomPx = Math.max(bottomPx, overlapFromBottom + gap + safe);
-          }
-        }
-      }
-
-      document.querySelectorAll('.pushAlarm').forEach(el => {
-        el.style.bottom = bottomPx + 'px';
-      });
-    } catch(_) {}
+    // 상단 고정이므로 별도 계산 불필요
   }
 
   function renderGallery(urls) {
@@ -458,10 +432,9 @@
        const clearTimer = () => { if (state.pushAlarmTimer) { clearTimeout(state.pushAlarmTimer); state.pushAlarmTimer = null; } if (timer) { clearTimeout(timer); timer = null; } };
 
        const fadeOutPrev = (el) => {
-         if (!el) return; // 첫 사이클
+         if (!el) return;
          el.style.opacity = '0';
-         el.style.transform = 'translate(-50%, 10px)';
-         // 페이드 아웃 종료 시점에 display:none 처리
+         el.style.transform = 'translate(-50%, -10px)';
          setTimeout(() => { el.style.display = 'none'; }, FADE_MS + 20);
        };
 
@@ -469,8 +442,7 @@
          if (!el) return;
          el.style.display = 'block';
          el.style.opacity = '0';
-         el.style.transform = 'translate(-50%, 10px)';
-         // reflow to ensure transition triggers
+         el.style.transform = 'translate(-50%, -10px)';
          void el.offsetWidth;
          el.style.opacity = '0.8';
          el.style.transform = 'translate(-50%, 0)';
