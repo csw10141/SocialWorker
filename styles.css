@@ -322,7 +322,7 @@ body {
   bottom: calc(env(safe-area-inset-bottom, 0px) + 88px); /* 기본 안전 위치; JS에서 스티키 바 높이에 맞춰 갱신 */
   display: none;
   font-size: 26px;
-  z-index: 9999; /* bottom-bar(100)보다 위 */
+  z-index: 99; /* bottom-bar(100)보다 아래 → 폼 가리지 않음 */
   margin: 0;
   pointer-events: none; /* 클릭 방해 방지 */
   transition: opacity 1.5s ease, transform 1.5s ease; /* 페이드/살짝 이동 */
@@ -334,27 +334,60 @@ body {
 /* Responsive tweaks */
 @media (max-width: 768px) {
   .bar-inner { flex-wrap: nowrap; }
-  /* Turn sticky-form into 2-column grid: left(inputs) / right(agree+button) */
   .sticky-form {
-    order: 0; /* reset any order */
     width: 100%;
     display: grid;
-    grid-template-columns: 1fr 150px; /* right column slightly wider for CTA */
-    grid-template-rows: auto auto auto; /* 셀렉트가 한 줄 더 차지 */
-    column-gap: 12px;
-    row-gap: 10px;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
+    column-gap: 8px;
+    row-gap: 8px;
     align-items: stretch;
   }
-  /* 모바일에서는 입력들이 가로 전체를 사용하는 것이 좋아 이름칸 별도 축소는 적용하지 않음 */
-  .sticky-form #nameInput { flex: 1 1 auto; max-width: none; }
-  #nameInput { grid-column: 1; grid-row: 1; }
-  #phoneInput { grid-column: 1; grid-row: 2; }
-  #eduSelect { grid-column: 1; grid-row: 3; width: 100%; max-width: none; }
-  .agree { grid-column: 2; grid-row: 1; justify-self: end; align-self: start; width: auto; }
-  .sticky-form .submit-btn { grid-column: 2; grid-row: 2; align-self: end; }
-  .gallery { padding: 12px 10px 96px; gap: 12px; }
+  .sticky-form #nameInput { flex: unset; max-width: none; grid-column: 1; grid-row: 1; }
+  .sticky-form #phoneInput { flex: unset; grid-column: 2; grid-row: 1; }
+  .sticky-form select#eduSelect { flex: unset; width: 100%; max-width: none; grid-column: 1; grid-row: 2; }
+  .sticky-form .agree { grid-column: 2; grid-row: 2; justify-self: start; align-self: center; }
+  .sticky-form .submit-btn {
+    grid-column: 1 / -1; grid-row: 3;
+    width: 100%;
+    height: 50px;
+    font-size: 18px;
+    font-weight: 800;
+    border-radius: 10px;
+  }
+  /* 모바일 입력 필드 다크 테마 통일 */
+  .sticky-form input[type="text"],
+  .sticky-form input[type="tel"] {
+    height: 42px;
+    padding: 8px 10px;
+    color: #fff;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.18);
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .sticky-form input[type="text"]::placeholder,
+  .sticky-form input[type="tel"]::placeholder { color: rgba(255,255,255,0.45); }
+  .sticky-form select#eduSelect {
+    height: 42px;
+    padding: 8px 32px 8px 10px;
+    color: #fff;
+    background-color: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.18);
+    font-size: 15px;
+    font-weight: 500;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23ffffff80' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  }
+  .sticky-form select#eduSelect option { color: #000; background: #fff; }
+  .bottom-bar {
+    padding: 10px 12px;
+    background: rgb(17 17 20 / 92%);
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .gallery { padding: 0 0 80px; gap: 0; }
+  .gallery-item img { border-radius: 0; box-shadow: none; }
   .policy-dialog { max-width: calc(100% - 24px); }
- }
+}
 
  /* 등록 중 오버레이 */
 .submitting-overlay{
@@ -388,7 +421,7 @@ input, select, textarea, button { font-size: 16px; }
 .site-footer__line:last-child { margin-bottom: 0; }
 
 @media (max-width: 768px) {
-  .site-footer { font-size: 12px; margin-bottom: 120px; padding: 10px 12px; }
+  .site-footer { font-size: 12px; margin-bottom: 170px; padding: 10px 12px; }
 }
 
 /* ============================
@@ -449,19 +482,19 @@ input, select, textarea, button { font-size: 16px; }
   100% { transform: scale(1.18); opacity: 0; }
 }
 
-/* 모바일: 더 크게 */
+/* 모바일: 더 크게 + 하단바 위로 충분히 띄움 */
 @media (max-width: 768px) {
   .floating-cta {
     right: 14px;
-    bottom: 160px; /* 모바일 하단바가 더 높으므로 위로 */
-    padding: 18px 26px;
+    bottom: 200px;
+    padding: 16px 22px;
   }
   .floating-cta__icon {
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
   }
   .floating-cta__text {
-    font-size: 20px;
+    font-size: 19px;
     font-weight: 800;
   }
 }

@@ -587,15 +587,7 @@
 
   // Initialize
   (async function init(){
-    state.images = await discoverImages(4, 3);
-    if (state.images.length === 0) {
-      const fallback = [];
-      fallback.push('images/1.png');
-      fallback.push('images/2.png');
-      fallback.push('images/3.png');
-      fallback.push('images/4.gif');
-      state.images = fallback;
-    }
+    state.images = ['images/new_img.png'];
     renderGallery(state.images);
     // Apply once after render in case of initial mobile viewport
     applyHotspotPosition(state.hotspotEl);
