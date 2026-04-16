@@ -587,7 +587,7 @@
 
   // Initialize
   (async function init(){
-    state.images = ['new_img.png'];
+    state.images = ['images/new_img.png'];
     renderGallery(state.images);
     // Apply once after render in case of initial mobile viewport
     applyHotspotPosition(state.hotspotEl);
