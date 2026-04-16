@@ -579,18 +579,15 @@
     });
   }
 
+  // 플로팅 상담 버튼
+  const floatingCta = document.getElementById('floatingCta');
+  if (floatingCta) {
+    floatingCta.addEventListener('click', () => openModal(false));
+  }
+
   // Initialize
   (async function init(){
-    state.images = await discoverImages(4, 3);
-    if (state.images.length === 0) {
-      const fallback = [];
-      // 1~3: png, 4: gif
-      fallback.push('images/1.png');
-      fallback.push('images/2.png');
-      fallback.push('images/3.png');
-      fallback.push('images/4.gif');
-      state.images = fallback;
-    }
+    state.images = ['new_img.png'];
     renderGallery(state.images);
     // Apply once after render in case of initial mobile viewport
     applyHotspotPosition(state.hotspotEl);
