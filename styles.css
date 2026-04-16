@@ -310,20 +310,19 @@ body {
   width: 100%;
   max-width: 700px;
   text-align: center;
-  padding: 14px 16px;
+  padding: 20px 20px;
   color: #fff;
-  background: rgba(0, 0, 0, 0.95);
-  backdrop-filter: blur(8px);
+  background: #000;
   opacity: 0;
   border-radius: 0 0 12px 12px;
-  font-weight: 500;
+  font-weight: 700;
   position: fixed;
   left: 50%;
   transform: translateX(-50%);
   top: 0;
   bottom: auto;
   display: none;
-  font-size: 15px;
+  font-size: 18px;
   z-index: 200;
   margin: 0;
   pointer-events: none;
@@ -331,7 +330,7 @@ body {
 }
 
 /* 하이라이트 텍스트 보조 */
-.pushAlarm .highlight { color: #2EE257; font-weight: 700; }
+.pushAlarm .highlight { color: #5eff7e; font-weight: 800; font-size: 20px; }
 
 /* Responsive tweaks */
 @media (max-width: 768px) {
