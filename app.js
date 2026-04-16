@@ -422,9 +422,9 @@
        items.forEach(el => { el.style.display = 'none'; el.style.opacity = '0'; });
 
        // 정밀 타이밍(밀리초)
-       const FADE_MS = 1500; // 1.5초 페이드 (styles.css transition과 일치)
-       const HOLD_MS = 1500; // 1.5초 유지(보이는 상태)
-       const GAP_MS  = 100; // 1.5초 공백(완전히 사라진 뒤)
+       const FADE_MS = 1500; // 1.5초 페이드
+       const HOLD_MS = 3000; // 3초 유지(보이는 상태)
+       const GAP_MS  = 300; // 0.3초 공백
 
        let index = -1;
        let timer = null;
