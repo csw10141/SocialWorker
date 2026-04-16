@@ -326,7 +326,7 @@ body {
   z-index: 200;
   margin: 0;
   pointer-events: none;
-  transition: opacity 1.5s ease, transform 1.5s ease;
+  transition: opacity 0.8s ease, transform 0.8s ease;
 }
 
 /* 하이라이트 텍스트 보조 */
@@ -426,6 +426,42 @@ input, select, textarea, button { font-size: 16px; }
 }
 
 /* ============================
+   하단 고정형 상담 버튼
+   ============================ */
+.bottom-cta {
+  width: 100%;
+  max-width: 960px;
+  margin: 32px auto 0;
+  padding: 0 16px;
+}
+.bottom-cta__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 18px 24px;
+  background: #e51a1a;
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  font-size: 20px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(229, 26, 26, 0.35);
+  transition: background .2s ease, transform .15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.bottom-cta__btn:hover { background: #c71414; }
+.bottom-cta__btn:active { transform: scale(0.98); }
+.bottom-cta__icon { width: 26px; height: 26px; flex-shrink: 0; }
+
+@media (max-width: 768px) {
+  .bottom-cta { margin-top: 24px; padding: 0 12px; }
+  .bottom-cta__btn { font-size: 19px; padding: 18px 20px; border-radius: 12px; }
+}
+
+/* ============================
    플로팅 상담 버튼 (FAB)
    ============================ */
 .floating-cta {
@@ -443,7 +479,7 @@ input, select, textarea, button { font-size: 16px; }
   border-radius: 60px;
   cursor: pointer;
   box-shadow: 0 6px 24px rgba(229, 26, 26, 0.45), 0 2px 8px rgba(0,0,0,0.3);
-  transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+  transition: transform .2s ease, box-shadow .2s ease, background .2s ease, opacity .4s ease;
   -webkit-tap-highlight-color: transparent;
 }
 .floating-cta:hover {

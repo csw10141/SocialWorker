@@ -422,9 +422,9 @@
        items.forEach(el => { el.style.display = 'none'; el.style.opacity = '0'; });
 
        // 정밀 타이밍(밀리초)
-       const FADE_MS = 1500; // 1.5초 페이드
-       const HOLD_MS = 3000; // 3초 유지(보이는 상태)
-       const GAP_MS  = 300; // 0.3초 공백
+       const FADE_MS = 800; // 0.8초 페이드
+       const HOLD_MS = 2000; // 2초 유지
+       const GAP_MS  = 200; // 0.2초 공백
 
        let index = -1;
        let timer = null;
@@ -556,6 +556,24 @@
   if (floatingCta) {
     floatingCta.addEventListener('click', () => openModal(false));
   }
+
+  // 하단 고정형 상담 버튼
+  const bottomCtaBtn = document.getElementById('bottomCtaBtn');
+  const bottomCta = document.getElementById('bottomCta');
+  if (bottomCtaBtn) {
+    bottomCtaBtn.addEventListener('click', () => openModal(false));
+  }
+
+  // 스크롤 시 하단 버튼이 보이면 플로팅 숨김
+  function updateFloatingVisibility() {
+    if (!floatingCta || !bottomCta) return;
+    const rect = bottomCta.getBoundingClientRect();
+    const isBottomCtaVisible = rect.top < window.innerHeight - 80;
+    floatingCta.style.opacity = isBottomCtaVisible ? '0' : '1';
+    floatingCta.style.pointerEvents = isBottomCtaVisible ? 'none' : 'auto';
+  }
+  window.addEventListener('scroll', updateFloatingVisibility, { passive: true });
+  window.addEventListener('resize', updateFloatingVisibility);
 
   // Initialize
   (async function init(){
